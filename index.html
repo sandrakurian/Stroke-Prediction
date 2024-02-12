@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<body>
+<style>
+	body {background-color: powderblue;margin-left: 20%; margin-right: 20%}
+	h1   {color: blue;}
+</style>
+<h1>Stroke Prediction for ML-4641</h1>
+<h2>Group 106, Members: Craig Nyazema, Jackie Glazer, Himanish Reddy, Sandra Kurian, Bingqing Xu</h2>
+<p>Github repository for ML-4641</p>
+
+
+<a href = "https://www.youtube.com/watch?v=IyQtAsemsAA&feature=youtu.be&ab_channel=JacquelineGlazer"> LINK TO VIDEO </a>
+<br> <a href = "https://docs.google.com/spreadsheets/d/1ratkbW-twm96H4wNctBNI6BEpME5Q1ez/edit#gid=150395039"> GANTT CHART </a>
+<br> <a href = "https://drive.google.com/file/d/1bAemTx4jCrNAyOACWVuuUaBW74GTbVVk/view"> LINK TO DATA </a>
+	
+<h2>Introduction:</h2>
+<p>A stroke occurs when there is a loss of blood flow to the brain. The brain needs a constant supply of Oxygen, so a lack of blood for even a couple of minutes causes brain cells to die. This can lead to long term problems for stroke victims such as trouble speaking, eating, remembering, walking or seeing. There are two types of stroke, ischemic and hemorrhagic strokes. A stroke happens to be the second leading cause of death in the world (according to WHO) [1]. Some of the risk factors for stroke include age, high blood pressure, smoking and obesity [2]. We hope to use modern machine learning techniques in order to predict whether a patient will have a stroke based on patient information (such as age, gender, and BMI) found in our dataset [3].
+</p>
+
+<h2>Problem Definition:</h2>
+<p>The primary task is binary classification. We are given patient information and we want to predict if they are likely to have a stroke or not based on their medical information. If properly implemented, this would hopefully help people know how they could take actions in their daily lives to decrease the likelihood of a stroke.</p>
+
+<h2>Methods:</h2>
+<p>The stroke prediction is achieved through two different models: logistic regression and a neural network. We started with logistic regression because this is one of the 
+	simplest machine learning algorithms and it is highly suitable for binary classification. Additionally, in a low dimensional dataset, logistic regression is less likely to overfit. 
+	However, this model may not be ideal as it is difficult to capture
+	complex relationships with logistic regression, and it is sensitive to outliers. The other model we trained was a neural network. This was advantageous as neutral networks 
+	are good for nonlinear data with a large number of inputs. Neural nets can also be trained for any number of inputs and layers, and can accurately predict interactions between features, and there are many algorithms available for training. A disadvantage of neural nets is that the user is unable to visualize the effect of the features on the target, and consequently, they are commonly referred to as a "black box".
+</p>
+
+<h2>Results/Discussion:</h2>
+<p>As mentioned above, we used binary classification to classify if the patient is likely have a stroke or not. We looked into variables on patient health such as gender, age, BMI, glucose levels, and histories of hypertension, heart disease, and smoking. However, social and economic factors can also influence the chance of an 
+	
+	having a stroke [2]. Because of this, we have considered factors such as the individual's marital status, employment type, and residential area. With these features, we determined if an individual is likely to have a stroke. By using accuracy, recall, precision, and F1 scores, we were able to compare our models and analyze how well they predicts strokes.</p>
+<h3>Logistic Regression Model:</h3>
+<p> The first step in training the logistic regression model was cleaning the data. Variables on patient health such as gender, age, BMI, histories of heart disease, and smoking are some of the 
+features when considering the possibility of a stroke. The original data set had some rows with missing data. To ensure we did not train/test with missing data, we had removed these entries. 
+Along with this, gender, marital status and residence types were converted to a binary value and an individual's smoking status was converted to an integer value.
+<br><br>
+The next step was preprocessing the data. The first method we used for our logistic regression model was L1-regularization, as it was found that this pairs well with logistic regression.
+After running the code for this, it was found that age most strongly correlates with the likelihood of stroke, while some of the other variables were redundant. 
+<br><br>
+
+To explore which of the other variables presented valuable information, we used Mutual Information Gain. We chose this method because it is a neutral solution that can be applied to various kinds of ML methods and it is also fast. 
+With this method we were able to determine the extent to which each feature affected the dependent variable of having a stroke. 
+We determined that age had the highest effect and that (in order of most significant to least significant effect on stroke) average glucose level, 
+hypertension, heart disease, ever married, formerly smoked, smokes, private job, and ever worked were the only variables that had a significant impact on stroke likelihood (
+	). 
+Therefore we kept all of these features, and we decided that it would be appropriate to remove the other features. The bar chart below shows the contribution of each feature to the target (stroke likelihood). 
+<figure style="text-align:center">
+    <img src="plot.png" width="700">
+    <figcaption><em>Figure 1: By using Mutual Information Gain, we can see the correlation between the features and having a stroke 
+	    (age, avg glucose level, hypertension, heart disease, ever_married, formerly smoked, smokes, private_ job, ever worked, gender, child_job, govt job, self employed, residence type, bmi) from left to right
+	    </em></figcaption>
+</figure>
+<br>
+We split the data into two sets. 80% of the data was used to train the data while the remaining 20% was used for testing. 
+We used cross-validation to evaluate the logistic regression model. By setting <code>cv=5</code>, we iterate and average the five accuracies to get an average model accuracy of 95%. 
+Based on the confusion matrix in Figure 2, you can see no false positive, giving a precision value of 1.
+<br>
+<figure style="text-align:center">
+    <img src="LRegression_confusion_matrix.png" width="500">
+    <figcaption><em>Figure 2: Confusion Matrix</em></figcaption>
+</figure>
+</p>
+<h3>Neural Network Model:</h3>
+
+<p> For our second model we decided to construct a binary classifier using a Neural network. We split the data into three sets. 60% of the data was used to train the model, 20% was used for testing, and the remaining 20% was used for validating. And then we trained the model using the Keras Sequential model because we were solving a binary classification problem and this model produces one output tensor. We also used the stochastic gradient descent optimizer and the binary cross entropy loss function for training this model.
+<br><br>
+The two plots below show the results of training the neural network on our data. As you can see, in the first plot and after a certain amount of time, the accuracy began to plateau slightly above 95%, which was why we cut the training short before loss had the chance to plateau. We also did this to make sure that the model did not overfit.
+<figure style="text-align:center">
+    <img src="Screen Shot 2022-12-06 at 5.16.29 PM.png" width="700">
+    <figcaption><em>Figure 3: Accuracy Graph
+	    </em></figcaption>
+</figure>
+<figure style="text-align:center">
+    <img src="Screen Shot 2022-12-06 at 5.17.32 PM.png" width="500">
+    <figcaption><em>Figure 4: Loss Graph</em></figcaption>
+</figure>
+<br><br>
+Once the neural network was trained, we used our validation dataset to evaluate the neural network and we found that our model had an accuracy of 95.5%. Also, as you can see based on the confusion matrix below, there were no false positives, which indicated a precision value of 1. This is defining precision as the number of true positives divided by the total number of positives, or from the patients we predicted as positive, how many were actually positive. 
+<br>
+<figure style="text-align:center">
+    <img src="Screen Shot 2022-12-06 at 5.17.46 PM.png" width="500">
+    <figcaption><em>Figure 5: Confusion matrix</em></figcaption>
+</figure>
+<br>
+
+</p>
+<h2>Conclusion:</h2>	
+<p>The neural network and the logistic regression models had a high accuracy when predicting stroke based on certain social and economic factors along with the individual’s health history. The neural network had an accuracy of 95.5% and it slightly outperformed the logistic regression model, which had an accuracy of 95%. Overall, both of these models achieved the goal of predicting stroke and we found it an interesting and important problem to address for the real world.
+<br>
+While we believe that these models are both good stroke predictors, they could definitely be improved. One area that would be worth exploring is gathering more data. This would allow us to try a wider variety of models. Additionally, tune parameters and test with different optimizers to improve performance.
+</p>
+
+
+<h2>Contribution table:</h2>
+<table border="2">
+    <tbody>
+    <tr>
+    <td rowspan="2">
+    <p><span style="font-weight: 400;">Page</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Make GitHub Page</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Craig</span></p>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <p><span style="font-weight: 400;">Compile Page</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Craig</span></p>
+    </td>
+    </tr>
+    <tr>
+    <td rowspan="5">
+    <p><span style="font-weight: 400;">Typed 500 Word Proposal</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Intro/Background</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Himanish</span></p>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <p><span style="font-weight: 400;">Problem Definition</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Himanish</span></p>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <p><span style="font-weight: 400;">Methods</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Jacqueline &amp; Bingqing</span></p>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <p><span style="font-weight: 400;">Results/Discussion</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Sandra &amp; Bingqing</span></p>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <p><span style="font-weight: 400;">At least 3 sources</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">All</span></p>
+    </td>
+    </tr>
+    <tr>
+    <td rowspan="2">
+    <p><span style="font-weight: 400;">Gannt Chart</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Fall Sheet</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Jacqueline</span></p>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <p><span style="font-weight: 400;">Fall Overview Sheet</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Jacqueline</span></p>
+    </td>
+    </tr>
+    <tr>
+    <td rowspan="3">
+    <p><span style="font-weight: 400;">Presentation</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Slides</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Craig &amp; Himanish</span></p>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <p><span style="font-weight: 400;">Script</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Sandra &amp; Bingxing</span></p>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <p><span style="font-weight: 400;">3 Minute Video</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Sandra</span></p>
+    </td>
+    </tr>
+    <tr>
+    <td>&nbsp;</td>
+    <td>
+    <p><span style="font-weight: 400;">Contribution Table</span></p>
+    </td>
+    <td>
+    <p><span style="font-weight: 400;">Jacqueline</span></p>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+
+<h5> Contribution table for midpoint report </h5>
+<table border="2">
+<style>
+table, tr, td {
+  border: 1px solid black;
+}
+</style>
+<table style="width:75%">
+    <tr>
+        <td>Data Cleaning </td>
+        <td>Sandra, Jacqueline </td>
+    </tr>
+    <tr>
+        <td>Preprocessing</td>
+        <td>Jacqueline, Craig</td>
+    </tr>
+    <tr>
+        <td>Logistic Regression </td>
+        <td>Jacqueline</td>
+    </tr>
+    <tr>
+        <td>Metrics</td>
+        <td>Himanish</td>
+    </tr>
+    <tr>
+        <td>Report</td>
+        <td>Craig, Sandra, Jacqueline, Himanish</td>
+    </tr>
+    <tr>
+        <td>Git Page Update</td>
+        <td>Himanish, Sandra</td>
+    </tr>
+</table>
+
+<h5> Contribution table for final report </h5>
+<table border="2">
+<style>
+table, tr, td {
+  border: 1px solid black;
+}
+</style>
+<table style="width:75%">
+    <tr>
+        <td>Neural Network</td>
+        <td>Sandra </td>
+    </tr>
+    <tr>
+        <td>Report</td>
+        <td>Jacqueline, Himanish, Craig</td>
+    </tr>
+    <tr>
+        <td>Git Page Update</td>
+        <td>Himanish, Craig</td>
+    </tr>
+    <tr>
+        <td>Final Report Video</td>
+        <td>Jacqueline</td>
+    </tr>
+</table>
+
+<h2>References:</h2>
+    <ol>
+        <li>The 5 Feature Selection Algorithms Every Data Scientist Should Know. https://towardsdatascience.com/the-5-feature-selection-algorithms-every-data-scientist-need-to-know-3a6b566efd2. </li>
+        <li>Brownlee, Jason. “How to Choose a Feature Selection Method for Machine Learning.” Machine Learning Mastery, 20 Aug. 2020, https://machinelearningmastery.com/feature-selection-with-real-and-categorical-data/. </li>
+        <li>Fedesoriano. (2021, January 26). Stroke prediction dataset. Kaggle. Retrieved October 4, 2022, from https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset </li>
+        <li>Galarnyk, Michael. Logistic Regression Using Python (Scikit-Learn). 13 Sept. 2017, https://towardsdatascience.com/logistic-regression-using-python-sklearn-numpy-mnist-handwriting-recognition-matplotlib-a6b31e2b166a. </li>
+        <li>Kumar, Saryam. Feature Selection Using Logistic Regression Model. 4 Sept. 2021, https://towardsdatascience.com/feature-selection-using-logistic-regression-model-efc949569f58. </li>
+        <li>Mayo Foundation for Medical Education and Research. (2022, January 20). Stroke. Mayo Clinic. Retrieved October 4, 2022, from https://www.mayoclinic.org/diseases-conditions/stroke/symptoms-causes/syc-20350113</li>
+        <li>Risk factors for stroke. Johns Hopkins Medicine. (2021, November 15). Retrieved October 4, 2022, from https://www.hopkinsmedicine.org/health/conditions-and-diseases/stroke/risk-factors-for-stroke </li>
+        <li>World Health Organization. (n.d.). The top 10 causes of death. World Health Organization. Retrieved October 4, 2022, from https://www.who.int/news-room/fact-sheets/detail/the-top-10-causes-of-death </li>
+    </ol>
+</body>
+</html>
